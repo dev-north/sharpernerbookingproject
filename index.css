@@ -1,0 +1,18 @@
+#main-header h1{
+    text-align: center;
+    background-color: rgb(201, 201, 201);
+}
+#main{
+    background-color: rgb(223, 218, 218);
+}
+
+.form-control{
+    background-color: white;
+    padding: 5px;
+    border: 2px solid black;
+}
+
+.btn{
+    background-color: black;
+    color: white;
+}
