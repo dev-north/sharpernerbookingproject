@@ -11,5 +11,14 @@ function storeDetails(e){
     e.preventDefault();
     let name = document.querySelector("#name");
     let email = document.querySelector("#email");
-    localStorage.setItem(email.value,name.value);
+
+
+    let newObj = {
+        username : name.value,
+        useremail : email.value
+    }
+    newObj_serialized = JSON.stringify(newObj);
+
+    localStorage.setItem("myObj" , newObj_serialized );
+    
 }
