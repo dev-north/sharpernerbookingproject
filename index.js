@@ -12,6 +12,8 @@ let btndelete = document.createElement("button");
 btndelete.className = "btn btn-danger btn-sm float-right delete";
 btndelete.appendChild(document.createTextNode("X"));
 
+document.addEventListener("DOMContentLoaded",refreshUserList);
+
 const axiosI = axios.create({
     baseURL: "https://crudcrud.com/api/83294fade41b46758a06b2756b1e01ec"
   });
@@ -48,19 +50,19 @@ function refreshUserList(){
     let userList = [];
     axiosI.get("/users")
     .then(res=>{
-        userList = res.data;
+        for (let index = 0; index < res.data.length; index++)    
+        {
+            const o = res.data[index];
+            console.log("create");
+            li = document.createElement("li");
+            li.className = "list-group-item";
+            li.appendChild(btndelete);
+            li.appendChild(btnEdit);
+            li.appendChild(document.createTextNode(`${o._id} || ${o.username} || ${o.useremail}`));
+            users.appendChild(li.cloneNode(true));
+        }
     })
     .catch(err=>console.error(err));
-    userList.forEach((user)=>{
-        o = JSON.parse(user);
-        li = document.createElement("li");
-        li.className = "list-group-item";
-        li.appendChild(btndelete);
-        li.appendChild(btnEdit);
-        li.appendChild(document.createTextNode(`${o.username} || ${o.useremail}`));
-        users.appendChild(li.cloneNode(true));
-    })
-
 }
 
 function listAction(e){
