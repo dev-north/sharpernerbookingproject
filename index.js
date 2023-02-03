@@ -47,13 +47,11 @@ function storeDetails(e){
 
 function refreshUserList(){
     users.innerHTML="";
-    let userList = [];
     axiosI.get("/users")
     .then(res=>{
         for (let index = 0; index < res.data.length; index++)    
         {
             const o = res.data[index];
-            console.log("create");
             li = document.createElement("li");
             li.className = "list-group-item";
             li.appendChild(btndelete);
@@ -69,10 +67,11 @@ function listAction(e){
     if (e.target.classList.contains("delete")){
         let selectedUser = e.target.parentElement;
         const userData = selectedUser.textContent.substring(5);
-        
-        let key = userData.split(" || ")[1];
-        localStorage.removeItem(key);
-        refreshUserList();
+        let id = userData.split(" || ")[0];
+        let target = "/users/"+id;
+        axiosI.delete(target)
+        .then(refreshUserList())
+        .catch(err=>console.error(err));
     }
     else if(e.target.classList.contains("edit")){
         let selectedUser = e.target.parentElement;
