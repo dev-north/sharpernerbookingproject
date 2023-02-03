@@ -14,6 +14,9 @@ btndelete.appendChild(document.createTextNode("X"));
 
 document.addEventListener("DOMContentLoaded",refreshUserList);
 
+let editing = false;
+let edited_id = undefined;
+
 const axiosI = axios.create({
     baseURL: "https://crudcrud.com/api/83294fade41b46758a06b2756b1e01ec"
   });
@@ -26,22 +29,35 @@ axiosI.interceptors.request.use(config=>{
   return Promise.reject(error);
 })
 
-function storeDetails(e){
+function storeDetails(e,_id){
     e.preventDefault();
     let name = document.querySelector("#name");
     let email = document.querySelector("#email");
 
-    axiosI.post(
-        "/users",{
-            username: name.value,
-            useremail:email.value
-        }
-    )
-    .then(res=>{
-        refreshUserList();
-        console.log(res);
-    })
-    .catch(err=>console.error(err));
+    if (!editing){
+        axiosI.post(
+            "/users",{
+                username: name.value,
+                useremail:email.value
+            }
+        )
+        .then(res=>{
+            refreshUserList();
+            console.log(res);
+        })
+        .catch(err=>console.error(err));
+    }
+    else if(editing){
+        let target = "/users/"+edited_id;
+        axiosI.put(
+            target,{
+                username: name.value,
+                useremail:email.value               
+            }
+        )
+        .then(refreshUserList())
+        .catch(err=>console.log(err));
+    }
 
 }
 
@@ -75,13 +91,13 @@ function listAction(e){
     }
     else if(e.target.classList.contains("edit")){
         let selectedUser = e.target.parentElement;
-        const userData = selectedUser.textContent.substring(5);                    
-        let key = userData.split(" || ")[1];
+        const userData = selectedUser.textContent.substring(5);
+        editing=true;
+        edited_id = userData.split(" || ")[0];
         let name = document.querySelector("#name");
         let email = document.querySelector("#email");
-        let userObj = JSON.parse(localStorage.getItem(key));
-        name.value = userObj.username;
-        email.value = userObj.useremail;
+        name.setAttribute("value",userData.split(" || ")[1]);
+        email.setAttribute("value",userData.split(" || ")[2]);
 
     }
 }
